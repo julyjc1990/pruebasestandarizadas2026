@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta tu Recinto - Prueba Estandarizada</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .logo p {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .materia {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f0f4ff;
+            border-radius: 8px;
+        }
+        
+        .search-box {
+            margin-bottom: 24px;
+        }
+        
+        .search-box label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-box .hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 6px;
+        }
+        
+        .result {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+        }
+        
+        .result.success {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .result.error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+        }
+        
+        .result h2 {
+            font-size: 14px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .result.success h2 {
+            color: #2e7d32;
+        }
+        
+        .result.error h2 {
+            color: #c62828;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .result.success .result-label {
+            color: #1b5e20;
+        }
+        
+        .result-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            text-align: right;
+        }
+        
+        .result.success .result-value {
+            color: #2e7d32;
+        }
+        
+        .result.error .result-value {
+            color: #c62828;
+        }
+        
+        .error-message {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #c62828;
+        }
+        
+        .instructions {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 16px;
+            border-radius: 4px;
+            margin-top: 30px;
+            font-size: 13px;
+            color: #1565c0;
+            line-height: 1.7;
+        }
+        
+        .instructions strong {
+            color: #0d47a1;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-size: 14px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #e0e0e0;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>CTP Ing. Carlos Pascua Zúñiga</h1>
+            <p>Consulta tu Recinto de Prueba</p>
+        </div>
+        
+        <div class="materia">
+            📚 Prueba Estandarizada: Estudios Sociales
+        </div>
+        
+        <div class="search-box">
+            <label for="cedula">Ingresa tu cédula:</label>
+            <input 
+                type="text" 
+                id="cedula" 
+                placeholder="Ej: 402780556"
+                autocomplete="off"
+            >
+            <p class="hint">Sin puntos ni guiones • Busca mientras escribes</p>
+        </div>
+        
+        <div class="loading" id="loading">
+            <span class="spinner"></span>
+            Buscando información...
+        </div>
+        
+        <div class="result" id="result">
+            <h2 id="resultTitle">Resultado</h2>
+            <div id="resultContent"></div>
+        </div>
+        
+        <div class="instructions">
+            <strong>Importante para el día de la prueba:</strong><br>
+            ✓ Verifica tu recinto y horario<br>
+            ✓ Llega 15 minutos antes<br>
+            ✓ Trae tu documento de identidad<br>
+            ✓ No olvides: sin celulares en el recinto
+        </div>
+        
+        <div class="info-box">
+            <strong>Horarios:</strong> Bloque 1: 08:00 a.m. - 11:00 a.m. | Bloque 2: 12:00 p.m. - 3:00 p.m.
+        </div>
+    </div>
+
+    <script>
+        // Datos de 137 estudiantes
+        const estudiantesData = [{"cedula": "402780556", "nombre": "ACOSTA CHAVES MARIANGEL", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 1}, {"cedula": "402790663", "nombre": "ACOSTA MIRANDA LUIS MANUEL", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 2}, {"cedula": "402800189", "nombre": "AGUILAR PEÑARANDA DANIELA", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 3}, {"cedula": "402790162", "nombre": "ARGUEDAS CHAVERRI KEYLOR DAVID", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 4}, {"cedula": "402780135", "nombre": "ARIAS ESQUIVEL DAVID JOSUE", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 5}, {"cedula": "402810123", "nombre": "ARIAS LOPEZ JOSUE DAVID", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 6}, {"cedula": "703410996", "nombre": "ARROYO AGUILAR DARREL YOEL", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 7}, {"cedula": "120230353", "nombre": "BALLESTERO PEREZ SHEIRYN MICHELLE", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 8}, {"cedula": "402780012", "nombre": "BARQUERO CALDERON ULISES SEBASTIAN", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 9}, {"cedula": "402780015", "nombre": "BARQUERO SOLIS WENDOLY NICOLE", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 10}, {"cedula": "402790297", "nombre": "BOGANTES CAMPOS GALILEA", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 11}, {"cedula": "402790778", "nombre": "BONILLA CASCANTE ABRAHAM JOEL", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 12}, {"cedula": "402780033", "nombre": "BRENES BARQUERO DIEGO CALED", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 13}, {"cedula": "120240141", "nombre": "BRENES MAYORGA SEBASTIAN GABRIEL", "recinto": "Recinto 1", "hora": "08:00 a.m.", "puesto": 14}, {"cedula": "402770205", "nombre": "BRENES SANCHEZ JOSE ANDRES", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 1}, {"cedula": "119970183", "nombre": "BRETT AGUERO JASMINE FERNANDA", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 2}, {"cedula": "402800723", "nombre": "CALDERON CHAVARRIA HILLARY", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 3}, {"cedula": "120290508", "nombre": "CALDERON RODRIGUEZ KATRIEL RUBI", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 4}, {"cedula": "120390034", "nombre": "CALVO ROYAL SEBASTIAN DANIEL", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 5}, {"cedula": "402750233", "nombre": "CAMACHO VILLALOBOS ZARA", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 6}, {"cedula": "120260298", "nombre": "CASTILLO CHAVES DEBORAH SUSANA", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 7}, {"cedula": "119930983", "nombre": "CASTILLO CRUZ ANDREW STEPHEN", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 8}, {"cedula": "402790641", "nombre": "CASTRO SOLANO CHRISTOPHER JOSE", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 9}, {"cedula": "120140852", "nombre": "CHACON MORA MARIPAZ", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 10}, {"cedula": "402780317", "nombre": "CHAVARRIA BONILLA GUSTAVO ALONSO", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 11}, {"cedula": "402790289", "nombre": "CHAVARRIA CAMACHO MARIA FERNANDA", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 12}, {"cedula": "120220025", "nombre": "CHAVES ALVAREZ SAMANTHA", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 13}, {"cedula": "120220023", "nombre": "CHAVES ALVAREZ SANTIAGO", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 14}, {"cedula": "119780723", "nombre": "CHAVES ARAYA JEFFERSON ANDRES", "recinto": "Recinto 2", "hora": "08:00 a.m.", "puesto": 15}, {"cedula": "402800458", "nombre": "CHAVES CHAVES JUAN PABLO", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 1}, {"cedula": "402800378", "nombre": "CHAVES GONZALEZ JUSTIN GABRIEL", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 2}, {"cedula": "120390573", "nombre": "CHAVES SANCHEZ SANTIAGO", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 3}, {"cedula": "120310863", "nombre": "CHINCHILLA SIBAJA ARLYN JOWELL", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 4}, {"cedula": "402800543", "nombre": "CONTRERAS ALFARO ANDRES STEVEN", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 5}, {"cedula": "120380922", "nombre": "CORDERO SEGURA JIMENA", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 6}, {"cedula": "402800433", "nombre": "CORDOBA SANCHEZ JAYDELINE DE LOS ANGELES", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 7}, {"cedula": "119970543", "nombre": "COREA REYNOSA NAYELHY FERNANDA", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 8}, {"cedula": "120120238", "nombre": "CORTES CORRALES LEILANI CHRISTINE", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 9}, {"cedula": "120290787", "nombre": "CUADRA RUIZ GULIANA", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 10}, {"cedula": "402770155", "nombre": "DELGADO CARVAJAL JUAN PABLO", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 11}, {"cedula": "402790969", "nombre": "DELGADO CHINCHILLA JUSTIN", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 12}, {"cedula": "208890953", "nombre": "DIAZ DINARTE MARIA NAZARETH", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 13}, {"cedula": "703250625", "nombre": "FLORES LOPEZ GUISELLE ANDREA", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 14}, {"cedula": "402780660", "nombre": "GALAN BRENES ALEJANDRA", "recinto": "Recinto 3", "hora": "08:00 a.m.", "puesto": 15}, {"cedula": "119800228", "nombre": "AGUERO SANCHEZ LANDY MONSERRAT", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 1}, {"cedula": "402810408", "nombre": "AGUILAR SANCHEZ ANTHONY JOSUE", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 2}, {"cedula": "402770769", "nombre": "ALVAREZ AIKMAN DANIELA PAOLA", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 3}, {"cedula": "119980397", "nombre": "ALVAREZ HERNANDEZ JOCKSAN AARON", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 4}, {"cedula": "402780108", "nombre": "ARCE ARIAS JOEL ANDRES", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 5}, {"cedula": "402790515", "nombre": "BRAVO JIMENEZ CRISTIAN JOSUE", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 6}, {"cedula": "402780671", "nombre": "BRENES ACUÑA ISAAC", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 7}, {"cedula": "402790227", "nombre": "ESQUIVEL ALFARO SHARLYN DE LOS ANGELES", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 8}, {"cedula": "402780552", "nombre": "HANSON MCLEAN ANTWAN RISHAND", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 9}, {"cedula": "402750597", "nombre": "HERNANDEZ DELGADO SEBASTIAN", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 10}, {"cedula": "402780149", "nombre": "HERNANDEZ RODRIGUEZ GENESIS SOFIA", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 11}, {"cedula": "120120594", "nombre": "HERRON BRENES ETHAN", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 12}, {"cedula": "402790653", "nombre": "MENA KALIL CRISTOFER", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 13}, {"cedula": "120210967", "nombre": "OBANDO BARQUERO ALEXANDER PAUL", "recinto": "Recinto 4", "hora": "08:00 a.m.", "puesto": 14}, {"cedula": "402800456", "nombre": "ROJAS RODRIGUEZ DERECK STHIRS", "recinto": "Recinto 5", "hora": "08:00 a.m.", "puesto": 1}, {"cedula": "402790039", "nombre": "ROSABAL MONTERO JOSE DANIEL", "recinto": "Recinto 5", "hora": "08:00 a.m.", "puesto": 2}, {"cedula": "402820037", "nombre": "SALAZAR MIRANDA DYLAN JESUS", "recinto": "Recinto 5", "hora": "08:00 a.m.", "puesto": 3}, {"cedula": "402780296", "nombre": "SANCHEZ PICADO ADAM GABRIEL", "recinto": "Recinto 5", "hora": "08:00 a.m.", "puesto": 4}, {"cedula": "402780504", "nombre": "SOLIS HERNANDEZ KEVIN ALONSO", "recinto": "Recinto 5", "hora": "08:00 a.m.", "puesto": 5}, {"cedula": "402780649", "nombre": "UGALDE RODRIGUEZ ANGUIE DANIELA", "recinto": "Recinto 5", "hora": "08:00 a.m.", "puesto": 6}, {"cedula": "402790696", "nombre": "URBINA SALAS KRISTEL JIMENA", "recinto": "Recinto 5", "hora": "08:00 a.m.", "puesto": 7}, {"cedula": "402760801", "nombre": "VALLE TALENO DANIELA ESMERALDA", "recinto": "Recinto 5", "hora": "08:00 a.m.", "puesto": 8}, {"cedula": "120360716", "nombre": "VILLEGAS PANIAGUA KIANY DE LOS ANGELES", "recinto": "Recinto 5", "hora": "08:00 a.m.", "puesto": 9}, {"cedula": "402810358", "nombre": "HERNANDEZ HERNANDEZ FABIO DANIEL", "recinto": "Recinto 6", "hora": "08:00 a.m.", "puesto": 1}, {"cedula": "402800551", "nombre": "SABORIO CAMPOS SEBASTIAN ANTONIO", "recinto": "Recinto 7", "hora": "08:00 a.m.", "puesto": 1}, {"cedula": "402810170", "nombre": "GARCIA OROZCO ASTRID REBECA", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 1}, {"cedula": "402790910", "nombre": "GOMEZ MEZA ESTEFANY PAOLA", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 2}, {"cedula": "120120775", "nombre": "GOMEZ VARGAS VERNAM OVIDIO", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 3}, {"cedula": "402780340", "nombre": "GONZALEZ PITA DEYRENNE AURIELA", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 4}, {"cedula": "703370006", "nombre": "GONZALEZ VARGAS TYRA NAHOMY", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 5}, {"cedula": "120350272", "nombre": "GUNERA CARCACHE DIEGO FABRICIO", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 6}, {"cedula": "402780283", "nombre": "GUTIERREZ CHAVES TAMARA", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 7}, {"cedula": "402790772", "nombre": "GUTIERREZ VEGA JASON DAVID", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 8}, {"cedula": "402770948", "nombre": "GUZMAN LEDEZMA ALANNA CAMILL", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 9}, {"cedula": "402790114", "nombre": "HERNANDEZ RIVERA CARLOS JOSE", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 10}, {"cedula": "119950327", "nombre": "JARA SOLIS JIMENA MARIA", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 11}, {"cedula": "402810486", "nombre": "LEON MENDOZA VAIOLA SHANICK", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 12}, {"cedula": "120240423", "nombre": "LOBO CHACON AXEL JESUS", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 13}, {"cedula": "120160863", "nombre": "LOPEZ BARQUERO BRIAN", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 14}, {"cedula": "402780354", "nombre": "LOPEZ GARITA NASHLA JIMENA", "recinto": "Recinto 1", "hora": "12:00 p.m.", "puesto": 15}, {"cedula": "C04039031", "nombre": "LUNA BENAVIDEZ JANFRAN ANTONIO", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 1}, {"cedula": "402780854", "nombre": "MADRIGAL GONZALEZ JEFERSON MAURICIO", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 2}, {"cedula": "120310501", "nombre": "MEJIA GUTIERREZ KRISLY TATIANA", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 3}, {"cedula": "402780748", "nombre": "MENA MARTINEZ FABIAN ARMANDO", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 4}, {"cedula": "120220739", "nombre": "MIRANDA AGUILAR JIMENA", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 5}, {"cedula": "120270239", "nombre": "MIRANDA SALAS FATIMA LUCIA", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 6}, {"cedula": "120010644", "nombre": "MOLINA RODRIGUEZ DAVID CALEB", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 7}, {"cedula": "120330350", "nombre": "MONTOYA ESPINOZA EHIDAN DANIEL", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 8}, {"cedula": "504820818", "nombre": "MORA CABEZAS GENESIS DANIELA", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 9}, {"cedula": "402790545", "nombre": "MURILLO ARCE SEBASTIAN FELIPE", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 10}, {"cedula": "402740982", "nombre": "ORTIZ MORALES SEBASTIAN JESUS", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 11}, {"cedula": "120280883", "nombre": "ORTIZ VEGA JOSTIN WILFREDO", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 12}, {"cedula": "402790149", "nombre": "OSORIO MONTERO CHARRIS JOSSETT", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 13}, {"cedula": "208940252", "nombre": "PEREZ JIMENEZ ADRIAN JOSUE", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 14}, {"cedula": "402790459", "nombre": "PICADO ARAYA MAYKEL JOAN", "recinto": "Recinto 2", "hora": "12:00 p.m.", "puesto": 15}, {"cedula": "120220071", "nombre": "QUESADA PEREZ MARIANGEL", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 1}, {"cedula": "C02771042", "nombre": "QUINTANA YATZARY RASHEL", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 2}, {"cedula": "402810482", "nombre": "QUIROS MONTERO MARIANO", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 3}, {"cedula": "402810265", "nombre": "QUIROS QUIROS STEVEN", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 4}, {"cedula": "402770628", "nombre": "RAMIREZ CAMPOS IAN DAVID", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 5}, {"cedula": "402720297", "nombre": "RAMIREZ LOBO REICHEL DANIELA", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 6}, {"cedula": "402780194", "nombre": "RAMIREZ VARGAS EMILLY EUGENIA", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 7}, {"cedula": "402790982", "nombre": "REYES MENDOZA KEYLA MELISSA", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 8}, {"cedula": "120110904", "nombre": "RODRIGUEZ CHAVES DERECK JAVIER", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 9}, {"cedula": "120000312", "nombre": "RODRIGUEZ PORRAS DENNIS DANIEL", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 10}, {"cedula": "402780237", "nombre": "RODRIGUEZ SANCHEZ KEYLIN LUCIANA", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 11}, {"cedula": "402780641", "nombre": "RODRIGUEZ TORRES ITHAN SANTIAGO", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 12}, {"cedula": "120280058", "nombre": "ROJAS AGUIRRE KIMBERLY YARLET", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 13}, {"cedula": "120100878", "nombre": "RUIZ ALPIZAR BRANDON JOSUE", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 14}, {"cedula": "402810429", "nombre": "RUIZ RODRIGUEZ FABIOLA MACIEL", "recinto": "Recinto 3", "hora": "12:00 p.m.", "puesto": 15}, {"cedula": "402810789", "nombre": "SALAS PEREZ GABRIEL DE JESUS", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 1}, {"cedula": "402800995", "nombre": "SANCHEZ HERRERA ALLISON DANIELA", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 2}, {"cedula": "120240436", "nombre": "SANCHEZ VARGAS CARLOS MANUEL", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 3}, {"cedula": "402790154", "nombre": "SANTAMARIA ALVARADO JEANCARLO", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 4}, {"cedula": "402790066", "nombre": "SERRANO CAMPOS MARIANGEL", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 5}, {"cedula": "801680982", "nombre": "SILES GONZALEZ DYLAN MARSEL", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 6}, {"cedula": "208990387", "nombre": "SIRIAS VASQUEZ ASHLEY DANIELA", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 7}, {"cedula": "402800363", "nombre": "SOLIS ABARCA ALEX FABIAN", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 8}, {"cedula": "209080283", "nombre": "SOLIS CHAVES ALONSO FRANCISCO", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 9}, {"cedula": "402780605", "nombre": "SOLIS GONZALEZ ISAAC", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 10}, {"cedula": "402800417", "nombre": "VALVERDE MELENDEZ OSCAR SANTIAGO", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 11}, {"cedula": "402800702", "nombre": "VALVERDE RAMIREZ CALEB SAUL", "recinto": "Recinto 4", "hora": "12:00 p.m.", "puesto": 12}, {"cedula": "402780572", "nombre": "VANEGAS SOLANO MISHELLE MAYSHA", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 1}, {"cedula": "120330960", "nombre": "VARGAS SOLIS VERONICA EUGENIA", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 2}, {"cedula": "402780817", "nombre": "VELASQUEZ RODRIGUEZ NELSON DAVID", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 3}, {"cedula": "402790457", "nombre": "VIALES VIQUEZ KEYLA SOFIA", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 4}, {"cedula": "402780949", "nombre": "VILLAGRAN TORRES JAYDEN JESUS", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 5}, {"cedula": "402750368", "nombre": "VILLALOBOS ROJAS ERICK ALONSO", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 6}, {"cedula": "402810303", "nombre": "VILLALOBOS UREÑA STEVEN DANIEL", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 7}, {"cedula": "120360444", "nombre": "ZAMORA CHAVES JEREMY", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 8}, {"cedula": "402800066", "nombre": "ZAMORA RODRIGUEZ SOFIA MARIEL", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 9}, {"cedula": "402790058", "nombre": "ZARATE QUESADA HANSON JOSE", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 10}, {"cedula": "402740926", "nombre": "ZUÑIGA ZUÑIGA LUIS ANDRES", "recinto": "Recinto 5", "hora": "12:00 p.m.", "puesto": 11}];
+
+        const cedulaInput = document.getElementById('cedula');
+        const resultDiv = document.getElementById('result');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultContent = document.getElementById('resultContent');
+        const loading = document.getElementById('loading');
+
+        cedulaInput.addEventListener('input', buscar);
+        cedulaInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') buscar();
+        });
+
+        function buscar() {
+            const cedula = cedulaInput.value.trim();
+
+            resultDiv.classList.remove('show');
+
+            if (!cedula || cedula.length < 4) return;
+
+            loading.style.display = 'block';
+
+            setTimeout(() => {
+                loading.style.display = 'none';
+
+                const estudiante = estudiantesData.find(e => e.cedula === cedula);
+
+                if (estudiante) {
+                    mostrarExito(estudiante);
+                } else {
+                    mostrarError(cedula);
+                }
+            }, 200);
+        }
+
+        function mostrarExito(estudiante) {
+            resultDiv.classList.add('show', 'success');
+            resultTitle.textContent = '✓ Información encontrada';
+            
+            resultContent.innerHTML = `
+                <div class="result-row">
+                    <span class="result-label">Recinto:</span>
+                    <span class="result-value">${estudiante.recinto}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Horario:</span>
+                    <span class="result-value">${estudiante.hora}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Número de puesto:</span>
+                    <span class="result-value">${estudiante.puesto}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Nombre en padrón:</span>
+                    <span class="result-value" style="text-align: right; font-size: 14px;">${estudiante.nombre}</span>
+                </div>
+            `;
+        }
+
+        function mostrarError(cedula) {
+            resultDiv.classList.add('show', 'error');
+            resultTitle.textContent = '✗ No encontrado';
+            
+            resultContent.innerHTML = `
+                <p class="error-message">
+                    No encontramos la cédula <strong>${cedula}</strong> en los registros de Estudios Sociales.
+                    <br><br>
+                    Verifica que la ingresaste correctamente (sin puntos ni guiones) o contacta a coordinación.
+                </p>
+            `;
+        }
+
+        // Focus en input al cargar
+        cedulaInput.focus();
+    </script>
+</body>
+</html>
